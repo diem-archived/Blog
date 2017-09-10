@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+from threading import Thread
 
 from flask import Flask, redirect, render_template, session, url_for
 from flask_bootstrap import Bootstrap
@@ -72,13 +73,10 @@ def index():
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.name.data).first()
         if user is None:
-            print('user is none')
             user = User(username=form.name.data)
             db.session.add(user)
             session['known'] = False
-            print(app.config['Blog_ADMIN'])
             if app.config['Blog_ADMIN']:
-                print('send_emai!')
                 send_email(
                     app.config['Blog_ADMIN'],
                     'New User',
@@ -119,6 +117,11 @@ manager.add_command('db', MigrateCommand)
 manager.add_command("shell", Shell(make_context=make_shell_context))
 
 
+def send_async_email(app, msg):
+    with app.app_context():
+        mail.send(msg)
+
+
 def send_email(to, subject, template, **kwargs):
     msg = Message(
         app.config['Blog_MAIL_SUBJECT_PREFIX'] + ' ' + subject,
@@ -126,7 +129,9 @@ def send_email(to, subject, template, **kwargs):
         recipients=[to])
     msg.body = render_template(template + '.txt', **kwargs)
     msg.html = render_template(template + '.html', **kwargs)
-    mail.send(msg)
+    thr = Thread(target=send_async_email, args=[app, msg])
+    thr.start()
+    return thr
 
 
 if __name__ == '__main__':
