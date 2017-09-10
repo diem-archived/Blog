@@ -47,7 +47,6 @@ class Role(db.Model):
     users = db.relationship('User', backref='role', lazy='dynamic')
 
     def __repr__(self):
-        # return '<User %r>' % self.username
         return '<Role {!r}>'.format(self.name)
 
 
@@ -58,7 +57,6 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 
     def __repr__(self):
-        # return '<User %r>' % self.username
         return '<User {!r}>'.format(self.username)
 
 
