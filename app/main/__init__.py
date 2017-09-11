@@ -1,10 +1,10 @@
 from flask import Blueprint
 
-from . import errors, views
-from ..models import Permission
-
 main = Blueprint('main', __name__)
 
+
+from . import errors, views
+from ..models import Permission
 
 
 @main.app_context_processor
