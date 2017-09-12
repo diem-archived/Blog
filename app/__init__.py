@@ -3,6 +3,7 @@ from flask_bootstrap import Bootstrap
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_moment import Moment
+from flask_pagedown import PageDown
 from flask_sqlalchemy import SQLAlchemy
 
 from config import config
@@ -15,6 +16,7 @@ db = SQLAlchemy()
 bootstrap = Bootstrap()
 moment = Moment()
 mail = Mail()
+pagedown = PageDown()
 
 
 def create_app(config_name):
@@ -22,6 +24,7 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
     config[config_name].init_app(app)
     login_manager.init_app(app)
+    pagedown.init_app(app)
 
     bootstrap.init_app(app)
     mail.init_app(app)
