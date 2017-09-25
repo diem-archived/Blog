@@ -1,12 +1,24 @@
 from flask import (abort, current_app, flash, make_response, redirect,
                    render_template, request, url_for)
 from flask_login import current_user, login_required
+from flask_sqlalchemy import get_debug_queries
 
 from . import main
 from .. import db
 from ..decorators import admin_required, permission_required
 from ..models import Comment, Permission, Post, Role, User
 from .forms import CommentForm, EditProfileAdminForm, EditProfileForm, PostForm
+
+
+@main.after_app_request
+def after_request(response):
+    for query in get_debug_queries():
+        if query.duration >= current_app.config['BLOG_SLOW_DB_QUERY_TIME']:
+            current_app.logger.warning(
+                'Slow query:{}\nParameter:{}\nDuration:{}s\nContext:{}\n'.
+                format(query.statement, query.parameters, query.duration,
+                       query.context))
+    return response
 
 
 @main.route('/', methods=['GET', 'POST'])
