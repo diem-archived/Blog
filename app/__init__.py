@@ -33,9 +33,9 @@ def create_app(config_name):
     db.init_app(app)
 
     # if not app.debug and not app.testing and not app.config['SSL_DISABLE']:
-    print('debug{}test{}'.format(app.debug, app.testing))
-    if not app.debug and not app.testing:
-        sslify = SSLify(app, age=300, subdomains=True)
+    # print('debug{}test{}'.format(app.debug, app.testing))
+    # if not app.debug and not app.testing:
+    sslify = SSLify(app, age=300, subdomains=True)
 
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
