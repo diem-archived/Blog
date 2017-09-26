@@ -102,3 +102,5 @@ ENV/
 .directory
 hello.py
 *.sqlite
+migrations2/
+.env
